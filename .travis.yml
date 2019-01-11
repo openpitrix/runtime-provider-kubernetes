@@ -1,0 +1,15 @@
+sudo: required
+services:
+- docker
+
+deploy:
+- provider: script
+  script: bash docker_push latest
+  on:
+    branch: master
+    repo: openpitrix/runtime-provider-kubernetes
+- provider: script
+  script: bash docker_push $TRAVIS_TAG
+  on:
+    tags: true
+    repo: openpitrix/runtime-provider-kubernetes

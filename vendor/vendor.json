@@ -3467,7 +3467,7 @@
 			"revisionTime": "2019-01-11T13:33:25Z"
 		},
 		{
-			"checksumSHA1": "6rSAuxtV74DXmdIUfGAaV9c/cz0=",
+			"checksumSHA1": "ODrshGqtTF1rLv4ck3JTYthTCzI=",
 			"path": "openpitrix.io/openpitrix/pkg/client/runtime_provider",
 			"revision": "ddd26c8766d28e730083b7a47854d3a3fe2cea7d",
 			"revisionTime": "2019-01-11T13:33:25Z"
@@ -3521,13 +3521,13 @@
 			"revisionTime": "2019-01-11T13:33:25Z"
 		},
 		{
-			"checksumSHA1": "YUoWEDDW4mEE8dTW4/UGT+uFfoI=",
+			"checksumSHA1": "uYoyypeM6QJyxMsctTv63nwWAlA=",
 			"path": "openpitrix.io/openpitrix/pkg/pb",
 			"revision": "ddd26c8766d28e730083b7a47854d3a3fe2cea7d",
 			"revisionTime": "2019-01-11T13:33:25Z"
 		},
 		{
-			"checksumSHA1": "NGQp/S/poQNrCvqq1vRxyBvjiao=",
+			"checksumSHA1": "6g9Satawc1oKe0oHAwai76G7W38=",
 			"path": "openpitrix.io/openpitrix/pkg/pi",
 			"revision": "ddd26c8766d28e730083b7a47854d3a3fe2cea7d",
 			"revisionTime": "2019-01-11T13:33:25Z"
@@ -3545,7 +3545,7 @@
 			"revisionTime": "2019-01-11T13:33:25Z"
 		},
 		{
-			"checksumSHA1": "eEvshw18KWW2vKxozmKpwkrHiMQ=",
+			"checksumSHA1": "JfwpBqJVJSSW/z1Xi3WSSLWe6j0=",
 			"path": "openpitrix.io/openpitrix/pkg/service/runtime_provider",
 			"revision": "ddd26c8766d28e730083b7a47854d3a3fe2cea7d",
 			"revisionTime": "2019-01-11T13:33:25Z"

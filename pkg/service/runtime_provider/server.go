@@ -7,6 +7,7 @@ package runtime_provider
 import (
 	"google.golang.org/grpc"
 
+	providerclient "openpitrix.io/openpitrix/pkg/client/runtime_provider"
 	"openpitrix.io/openpitrix/pkg/config"
 	"openpitrix.io/openpitrix/pkg/constants"
 	"openpitrix.io/openpitrix/pkg/logger"
@@ -17,11 +18,12 @@ import (
 )
 
 type Server struct {
+	runtimeprovider.Server
 }
 
 func Serve(cfg *config.Config) {
 	pi.SetGlobal(cfg)
-	err := runtimeprovider.RegisterRuntimeProvider(Provider, ProviderConfig)
+	err := providerclient.RegisterRuntimeProvider(Provider, ProviderConfig)
 	if err != nil {
 		logger.Critical(nil, "failed to register provider config: %+v", err)
 	}

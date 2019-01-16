@@ -24,7 +24,6 @@ import (
 	"openpitrix.io/openpitrix/pkg/sender"
 	"openpitrix.io/openpitrix/pkg/util/funcutil"
 	"openpitrix.io/openpitrix/pkg/util/pbutil"
-
 )
 
 func getChart(ctx context.Context, versionId string) (*chart.Chart, error) {

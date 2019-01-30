@@ -19,45 +19,47 @@ const (
 	JobManagerHost             = prefix + "job-manager"
 	TaskManagerHost            = prefix + "task-manager"
 	PilotServiceHost           = prefix + "pilot-service"
-	IAMServiceHost             = prefix + "iam-service"
-	IAM2ServiceHost            = prefix + "iam2-service"
+	AccountServiceHost         = prefix + "account-service"
+	IMServiceHost              = prefix + "im-service"
+	AMServiceHost              = prefix + "am-service"
 	RepoIndexerHost            = prefix + "repo-indexer"
 	CategoryManagerHost        = prefix + "category-manager"
 	RuntimeProviderManagerHost = prefix + "rp-manager"
-
-	MarketManagerHost = prefix + "market-manager"
-
-	AttachmentManagerHost = prefix + "attachment-manager"
-	VendorManagerHost     = prefix + "vendor-manager"
+	NotificationHost           = prefix + "notification"
+	MarketManagerHost          = prefix + "market-manager"
+	AttachmentManagerHost      = prefix + "attachment-manager"
+	VendorManagerHost          = prefix + "vendor-manager"
 )
 
 const (
-	ApiGatewayPort          = 9100 // 91 is similar as Pi, Open[Pi]trix
-	RepoManagerPort         = 9101
-	AppManagerPort          = 9102
-	RuntimeManagerPort      = 9103
-	ClusterManagerPort      = 9104
-	JobManagerPort          = 9106
-	TaskManagerPort         = 9107
-	RepoIndexerPort         = 9108
-	PilotServicePort        = 9110
-	FrontgateServicePort    = 9111
-	DroneServicePort        = 9112
-	CategoryManagerPort     = 9113
-	PilotTlsListenPort      = 9114 // public service for frontgate
-	IAMServicePort          = 9115
-	FrontgateFileServerPort = 9116
-	MarketManagerPort       = 9117
-	VendorManagerPort       = 9118
-	IAM2ServicePort         = 9119
-	EtcdServicePort         = 2379
-
+	ApiGatewayPort             = 9100 // 91 is similar as Pi, Open[Pi]trix
+	RepoManagerPort            = 9101
+	AppManagerPort             = 9102
+	RuntimeManagerPort         = 9103
+	ClusterManagerPort         = 9104
+	JobManagerPort             = 9106
+	TaskManagerPort            = 9107
+	RepoIndexerPort            = 9108
+	PilotServicePort           = 9110
+	FrontgateServicePort       = 9111
+	DroneServicePort           = 9112
+	CategoryManagerPort        = 9113
+	PilotTlsListenPort         = 9114 // public service for frontgate
+	AccountServicePort         = 9115
+	FrontgateFileServerPort    = 9116
+	MarketManagerPort          = 9117
+	VendorManagerPort          = 9118
+	IMServicePort              = 9119
+	AMServicePort              = 9120
+	EtcdServicePort            = 2379
 	AttachmentManagerPort      = 9120
 	RuntimeProviderManagerPort = 9121
+	NotificationPort           = 9201
 )
 
 const (
 	StatusActive      = "active"
+	StatusUsed        = "used"
 	StatusEnabled     = "enabled"
 	StatusDisabled    = "disabled"
 	StatusCreating    = "creating"
@@ -192,6 +194,13 @@ const (
 	ServiceUpgrade        = "upgrade"
 )
 
+const (
+	NfContentTypeInvite = "invite"
+	NfContentTypeVerify = "verify"
+
+	NfTypeEmail = "email"
+)
+
 var ServiceNames = []string{
 	ServiceInit, ServiceStart, ServiceStop, ServiceScaleIn, ServiceScaleOut, ServiceRestart,
 	ServiceDestroy, ServiceBackup, ServiceRestore, ServiceDeleteSnapshot, ServiceUpgrade,
@@ -207,17 +216,18 @@ const (
 	RetryInterval = 3 * time.Second
 )
 
-var SupportRoles = []string{
+var AllRoles = []string{
 	RoleUser,
+	RoleIsv,
 	RoleDeveloper,
 	RoleGlobalAdmin,
 }
-var AllRoles = []string{
-	RoleUser,
-	RoleDeveloper,
+var AllIsvRoles = []string{
+	RoleIsv,
 	RoleGlobalAdmin,
 }
 var AllDeveloperRoles = []string{
+	RoleIsv,
 	RoleDeveloper,
 	RoleGlobalAdmin,
 }

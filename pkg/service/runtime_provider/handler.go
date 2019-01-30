@@ -26,10 +26,10 @@ import (
 	"openpitrix.io/openpitrix/pkg/util/pbutil"
 )
 
-func getChart(ctx context.Context, versionId string) (*chart.Chart, error) {
+func getChartAndAppId(ctx context.Context, versionId string) (*chart.Chart, string, error) {
 	appClient, err := appclient.NewAppManagerClient()
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	req := pb.GetAppVersionPackageRequest{
@@ -38,7 +38,7 @@ func getChart(ctx context.Context, versionId string) (*chart.Chart, error) {
 
 	resp, err := appClient.GetAppVersionPackage(ctx, &req)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	pkg := resp.GetPackage()
@@ -46,9 +46,9 @@ func getChart(ctx context.Context, versionId string) (*chart.Chart, error) {
 
 	c, err := chartutil.LoadArchive(r)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
-	return c, nil
+	return c, resp.GetAppId().GetValue(), nil
 }
 
 func (p *Server) ParseClusterConf(ctx context.Context, req *pb.ParseClusterConfRequest) (*pb.ParseClusterConfResponse, error) {
@@ -57,7 +57,7 @@ func (p *Server) ParseClusterConf(ctx context.Context, req *pb.ParseClusterConfR
 	conf := req.GetConf().GetValue()
 	cluster := models.PbToClusterWrapper(req.GetCluster())
 
-	c, err := getChart(ctx, versionId)
+	c, appId, err := getChartAndAppId(ctx, versionId)
 	if err != nil {
 		logger.Error(ctx, "Load helm chart from app version [%s] failed: %+v", versionId, err)
 		return nil, err
@@ -77,7 +77,7 @@ func (p *Server) ParseClusterConf(ctx context.Context, req *pb.ParseClusterConfR
 		RuntimeId: runtimeId,
 		Namespace: namespace,
 	}
-	err = parser.Parse(cluster)
+	err = parser.Parse(cluster, appId)
 	if err != nil {
 		logger.Error(ctx, "Parse app version [%s] failed: %+v", versionId, err)
 		return nil, err
@@ -203,7 +203,7 @@ func (p *Server) HandleSubtask(ctx context.Context, req *pb.HandleSubtaskRequest
 
 	switch task.TaskAction {
 	case constants.ActionCreateCluster:
-		c, err := getChart(ctx, taskDirective.VersionId)
+		c, _, err := getChartAndAppId(ctx, taskDirective.VersionId)
 		if err != nil {
 			return nil, err
 		}
@@ -220,7 +220,7 @@ func (p *Server) HandleSubtask(ctx context.Context, req *pb.HandleSubtaskRequest
 			return nil, err
 		}
 	case constants.ActionUpgradeCluster:
-		c, err := getChart(ctx, taskDirective.VersionId)
+		c, _, err := getChartAndAppId(ctx, taskDirective.VersionId)
 		if err != nil {
 			return nil, err
 		}

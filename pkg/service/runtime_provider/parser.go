@@ -28,11 +28,9 @@ import (
 	_ "k8s.io/kubernetes/pkg/apis/apps/install"
 	_ "k8s.io/kubernetes/pkg/apis/extensions/install"
 
-	appclient "openpitrix.io/openpitrix/pkg/client/app"
 	"openpitrix.io/openpitrix/pkg/constants"
 	"openpitrix.io/openpitrix/pkg/logger"
 	"openpitrix.io/openpitrix/pkg/models"
-	"openpitrix.io/openpitrix/pkg/pb"
 	"openpitrix.io/openpitrix/pkg/util/jsonutil"
 )
 
@@ -45,42 +43,14 @@ type Parser struct {
 	Namespace string
 }
 
-func (p *Parser) getAppVersion() (*pb.AppVersion, error) {
-	appManagerClient, err := appclient.NewAppManagerClient()
-	if err != nil {
-		return nil, err
-	}
-
-	req := &pb.DescribeAppVersionsRequest{
-		VersionId: []string{p.VersionId},
-	}
-
-	resp, err := appManagerClient.DescribeAppVersions(p.ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.AppVersionSet) == 0 {
-		return nil, fmt.Errorf("app version [%s] not found", p.VersionId)
-	}
-
-	appVersion := resp.AppVersionSet[0]
-	return appVersion, nil
-}
-
-func (p *Parser) parseCluster(name string, description string, additionalInfo string, customVals map[string]interface{}) (*models.Cluster, error) {
-	appVersion, err := p.getAppVersion()
-	if err != nil {
-		return nil, err
-	}
-
+func (p *Parser) parseCluster(name string, description string, additionalInfo string, customVals map[string]interface{}, appId string) (*models.Cluster, error) {
 	env := jsonutil.ToString(customVals)
 
 	cluster := &models.Cluster{
 		Zone:           p.Namespace,
 		Name:           name,
 		Description:    description,
-		AppId:          appVersion.AppId.GetValue(),
+		AppId:          appId,
 		VersionId:      p.VersionId,
 		Status:         constants.StatusPending,
 		RuntimeId:      p.RuntimeId,
@@ -132,7 +102,7 @@ func (p *Parser) parseClusterRolesAndClusterCommons(vals map[string]interface{})
 		}
 
 		manifests := releaseutil.SplitManifests(content)
-		
+
 		for _, manifest := range manifests {
 			b := bufio.NewReader(strings.NewReader(manifest))
 			r := k8syaml.NewYAMLReader(b)
@@ -433,7 +403,7 @@ func (p *Parser) parseClusterRolesAndClusterCommons(vals map[string]interface{})
 	return clusterRoles, clusterCommons, jsonutil.ToString(additionalInfo), nil
 }
 
-func (p *Parser) Parse(clusterWrapper *models.ClusterWrapper) error {
+func (p *Parser) Parse(clusterWrapper *models.ClusterWrapper, appId string) error {
 	customVals, name, description, err := p.parseCustomValues()
 	if err != nil {
 		return err
@@ -455,7 +425,7 @@ func (p *Parser) Parse(clusterWrapper *models.ClusterWrapper) error {
 		return err
 	}
 
-	cluster, err := p.parseCluster(name, description, additionalInfo, customVals)
+	cluster, err := p.parseCluster(name, description, additionalInfo, customVals, appId)
 	if err != nil {
 		return err
 	}

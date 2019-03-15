@@ -7,7 +7,7 @@
 package version
 
 func init() {
-	ShortVersion = "v0.1.4-376-g7bc6ec60-dev"
-	GitSha1Version = "7bc6ec60ea50ec78521915bad0979948c36d66f9"
-	BuildDate = "2018-09-27 15:31:24"
+	ShortVersion = "v0.1.4-755-g3b9b4b21"
+	GitSha1Version = "3b9b4b2163b528c90cc6da16905670600a07eed0"
+	BuildDate = "2019-03-06 11:50:45"
 }

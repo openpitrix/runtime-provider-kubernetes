@@ -8,6 +8,7 @@ const (
 	Provider       = "kubernetes"
 	ProviderConfig = `
 provider_type: helm
+enable: true
 `
 )
 

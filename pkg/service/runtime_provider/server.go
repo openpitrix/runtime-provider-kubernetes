@@ -28,7 +28,7 @@ func Serve(cfg *config.Config) {
 		logger.Critical(nil, "failed to register provider config: %+v", err)
 	}
 	s := Server{}
-	manager.NewGrpcServer("runtime-provider-qingcloud", constants.RuntimeProviderManagerPort).
+	manager.NewGrpcServer("runtime-provider-kubernetes", constants.RuntimeProviderManagerPort).
 		ShowErrorCause(cfg.Grpc.ShowErrorCause).
 		Serve(func(server *grpc.Server) {
 			pb.RegisterRuntimeProviderManagerServer(server, &s)

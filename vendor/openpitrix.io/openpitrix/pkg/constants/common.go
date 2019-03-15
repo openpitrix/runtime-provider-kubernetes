@@ -55,6 +55,7 @@ const (
 	AttachmentManagerPort      = 9120
 	RuntimeProviderManagerPort = 9121
 	NotificationPort           = 9201
+	ServiceConfigPort          = 9202
 )
 
 const (
@@ -216,37 +217,29 @@ const (
 	RetryInterval = 3 * time.Second
 )
 
-var AllRoles = []string{
-	RoleUser,
-	RoleIsv,
-	RoleDeveloper,
-	RoleGlobalAdmin,
-}
-var AllIsvRoles = []string{
-	RoleIsv,
-	RoleGlobalAdmin,
-}
-var AllDeveloperRoles = []string{
-	RoleIsv,
-	RoleDeveloper,
-	RoleGlobalAdmin,
-}
-var AllAdminRoles = []string{
-	RoleGlobalAdmin,
-}
-
 const (
 	RoleUser        = "user"
 	RoleDeveloper   = "developer"
 	RoleIsv         = "isv"
 	RoleGlobalAdmin = "global_admin"
 
+	PortalGlobalAdmin = "global_admin"
+
 	GrantTypeClientCredentials = "client_credentials"
 	GrantTypePassword          = "password"
 	GrantTypeRefreshToken      = "refresh_token"
 
-	RoleBusinessAdmin = "business_admin"
-	RoleDevelopAdmin  = "develop_admin"
+	OperatorTypeGlobalAdmin = "global_admin"
+	OperatorTypeDeveloper   = "developer"
+	OperatorTypeBusiness    = "business"
+	OperatorTypeTechnical   = "technical"
+	OperatorTypeIsv         = "isv"
+
+	ActionBundleBusinessReview  = "business_review"
+	ActionBundleTechnicalReview = "technical_review"
+	ActionBundleIsvReview       = "isv_review"
+	ActionBundleIsvApply        = "isv_apply"
+	ActionBundleIsvAuth         = "isv_auth"
 )
 
 var GrantTypeTokens = []string{
@@ -263,4 +256,14 @@ var AllowedAppDefaultStatus = []string{
 	"",
 	StatusDraft,
 	StatusActive,
+}
+
+const (
+	ServiceTypeNotification = "notification"
+	ServiceTypeRuntime      = "runtime"
+)
+
+var ServiceTypes = []string{
+	ServiceTypeNotification,
+	ServiceTypeRuntime,
 }

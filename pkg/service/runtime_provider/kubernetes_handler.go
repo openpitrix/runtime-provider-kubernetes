@@ -31,6 +31,11 @@ import (
 	"openpitrix.io/openpitrix/pkg/util/stringutil"
 )
 
+const (
+	Type       = "type"
+	ExternalIp = "external_ip"
+)
+
 var (
 	NamespaceReg    = `^[a-z]([-a-z0-9]*[a-z0-9])?$`
 	NamespaceRegExp = regexp.MustCompile(NamespaceReg)
@@ -181,10 +186,16 @@ func (p *KubeHandler) describeAdditionalInfo(namespace string, cluster *models.C
 					return err
 				}
 
-				additionalInfo[t][i]["type"] = string(service.Spec.Type)
+				additionalInfo[t][i][Type] = string(service.Spec.Type)
 				additionalInfo[t][i]["cluster_ip"] = service.Spec.ClusterIP
 				if service.Status.LoadBalancer.Ingress != nil && len(service.Status.LoadBalancer.Ingress) != 0 {
-					additionalInfo[t][i]["external_ip"] = service.Status.LoadBalancer.Ingress[0].IP
+					additionalInfo[t][i][ExternalIp] = service.Status.LoadBalancer.Ingress[0].IP
+				} else {
+					if additionalInfo[t][i][Type] == "LoadBalancer" {
+						additionalInfo[t][i][ExternalIp] = "pending"
+					} else {
+						additionalInfo[t][i][ExternalIp] = "none"
+					}
 				}
 
 				ports := []string{}

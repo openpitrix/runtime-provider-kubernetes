@@ -32,7 +32,7 @@ import (
 )
 
 var (
-	NamespaceReg    = `^[a-z]([-a-z0-9]*[a-z0-9])?$`
+	NamespaceReg    = `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
 	NamespaceRegExp = regexp.MustCompile(NamespaceReg)
 )
 
@@ -307,7 +307,7 @@ func (p *KubeHandler) ValidateRuntime(zone string, runtimeCredential *models.Run
 		zone = "default"
 	}
 	if !NamespaceRegExp.MatchString(zone) {
-		err := fmt.Errorf(`namespace must match with regexp "[a-z0-9]([-a-z0-9]*[a-z0-9])?"`)
+		err := fmt.Errorf(`namespace must match with regexp "%s"`, NamespaceReg)
 		return gerr.NewWithDetail(nil, gerr.PermissionDenied, err, gerr.ErrorNamespaceNotMatchWithRegex, zone, NamespaceReg)
 	}
 	client, _, err := p.initKubeClientWithCredential(runtimeCredential.RuntimeCredentialContent)

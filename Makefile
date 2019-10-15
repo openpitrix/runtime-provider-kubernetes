@@ -105,16 +105,11 @@ compose-down: ## Shutdown docker compose
 	docker-compose down
 	@echo "compose-down done"
 
-build-image-%: ## build docker image
-	@if [ "$*" = "latest" ];then \
-	docker build -t openpitrix/runtime-provider-kubernetes:latest .; \
-	elif [ "`echo "$*" | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+"`" != "" ];then \
-	docker build -t openpitrix/runtime-provider-kubernetes:$* .; \
-	fi
+BUILDX_BUILD_PUSH=docker buildx build --platform linux/amd64,linux/arm64 --output=type=registry --push
 
-push-image-%: ## push docker image
+build-push-image-%: ## build docker image
 	@if [ "$*" = "latest" ];then \
-	docker push openpitrix/runtime-provider-kubernetes:latest; \
+	$(BUILDX_BUILD_PUSH) -t openpitrix/runtime-provider-kubernetes:latest .; \
 	elif [ "`echo "$*" | grep -E "^v[0-9]+\.[0-9]+\.[0-9]+"`" != "" ];then \
-	docker push openpitrix/runtime-provider-kubernetes:$*; \
+	$(BUILDX_BUILD_PUSH) -t openpitrix/runtime-provider-kubernetes:$* .; \
 	fi

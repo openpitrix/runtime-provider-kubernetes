@@ -62,10 +62,13 @@ fmt-all: ## Format all code
 	$(RUN_IN_DOCKER) $(GO_FMT) $(GO_FILES)
 	@echo "fmt done"
 
+ARCH=$(shell uname -m)
 .PHONY: check
 check: ## go vet and race
+ifeq ($(ARCH), x86_64)
 	$(GO_RACE) $(GO_PATH_FILES)
 	$(GO_VET) $(GO_PATH_FILES)
+endif
 
 .PHONY: fmt
 fmt: ## Format changed files

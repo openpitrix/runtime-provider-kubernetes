@@ -28,6 +28,11 @@ import (
 	"openpitrix.io/openpitrix/pkg/util/funcutil"
 )
 
+const (
+	TillerConnectionTimeout = 300
+	InstallTimeout          = 3600
+)
+
 var (
 	ClusterNameReg    = `^[a-z]([-a-z0-9]*[a-z0-9])?$`
 	ClusterNameRegExp = regexp.MustCompile(ClusterNameReg)
@@ -81,7 +86,10 @@ func (p *HelmHandler) initHelmClient() (*helm.Client, error) {
 		return nil, fmt.Errorf("could not get a connection to tiller: %+v. ", err)
 	}
 
-	hc := helm.NewClient(helm.Host(fmt.Sprintf("localhost:%d", tunnel.Local)))
+	hc := helm.NewClient(
+		helm.Host(fmt.Sprintf("localhost:%d", tunnel.Local)),
+		helm.ConnectTimeout(TillerConnectionTimeout),
+	)
 	return hc, nil
 }
 
@@ -91,7 +99,7 @@ func (p *HelmHandler) InstallReleaseFromChart(c *chart.Chart, ns string, rawVals
 		return err
 	}
 
-	_, err = hc.InstallReleaseFromChart(c, ns, helm.ValueOverrides(rawVals), helm.ReleaseName(releaseName), helm.InstallWait(true), helm.InstallTimeout(3600))
+	_, err = hc.InstallReleaseFromChart(c, ns, helm.ValueOverrides(rawVals), helm.ReleaseName(releaseName), helm.InstallWait(true), helm.InstallTimeout(InstallTimeout))
 	if err != nil {
 		return err
 	}

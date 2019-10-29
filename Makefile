@@ -106,7 +106,7 @@ compose-down: ## Shutdown docker compose
 	docker-compose down
 	@echo "compose-down done"
 
-BUILDX_BUILD_PUSH=docker buildx build --platform linux/amd64,linux/arm64 --output=type=registry --push
+BUILDX_BUILD_PUSH=docker buildx build --progress plain --platform linux/amd64,linux/arm64 --output=type=registry --push
 
 build-push-image-%: ## build docker image
 	$(BUILDX_BUILD_PUSH) -t openpitrix/runtime-provider-kubernetes:$* .

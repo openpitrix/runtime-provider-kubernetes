@@ -4,13 +4,10 @@ services:
 language: go
 go:
 - '1.13'
-arch:
-- amd64
-- arm64
 go_import_path: openpitrix.io/runtime-provider-kubernetes
-#before_install:
-#- sudo rm /usr/bin/docker
-#- curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
+before_install:
+- sudo rm /usr/bin/docker
+- curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
 script:
 - make check
 deploy:

@@ -10,7 +10,6 @@ import (
 	"regexp"
 	"strings"
 
-	"google.golang.org/grpc/transport"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -175,7 +174,7 @@ func (p *HelmHandler) CheckClusterNameIsUnique(clusterName string) error {
 	err := funcutil.WaitForSpecificOrError(func() (bool, error) {
 		_, err := p.ReleaseStatus(clusterName)
 		if err != nil {
-			if _, ok := err.(transport.ConnectionError); ok {
+			if isConnectionError(err) {
 				return false, nil
 			}
 			return true, nil

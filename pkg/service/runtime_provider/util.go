@@ -7,6 +7,7 @@ package runtime_provider
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"openpitrix.io/openpitrix/pkg/util/jsonutil"
 	"openpitrix.io/openpitrix/pkg/util/yamlutil"
@@ -44,4 +45,11 @@ func GetStringFromValues(vals map[string]interface{}, key string) (string, bool)
 		return "", false
 	}
 	return s, true
+}
+
+func isConnectionError(err error) bool {
+	if err == nil {
+		return false
+	}
+	return strings.HasPrefix(err.Error(), "connection error:")
 }

@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"strings"
 
-	"google.golang.org/grpc/transport"
 	"k8s.io/helm/pkg/chartutil"
 	"k8s.io/helm/pkg/proto/hapi/chart"
 	"k8s.io/helm/pkg/proto/hapi/release"
@@ -278,7 +277,7 @@ func (p *Server) WaitSubtask(ctx context.Context, req *pb.WaitSubtaskRequest) (*
 		case constants.ActionRollbackCluster:
 			resp, err := helmHandler.ReleaseStatus(taskDirective.ClusterName)
 			if err != nil {
-				if _, ok := err.(transport.ConnectionError); ok {
+				if isConnectionError(err) {
 					return false, nil
 				}
 				return true, err
@@ -311,7 +310,7 @@ func (p *Server) WaitSubtask(ctx context.Context, req *pb.WaitSubtaskRequest) (*
 		case constants.ActionDeleteClusters:
 			resp, err := helmHandler.ReleaseStatus(taskDirective.ClusterName)
 			if err != nil {
-				if _, ok := err.(transport.ConnectionError); ok {
+				if isConnectionError(err) {
 					return false, nil
 				}
 				if strings.Contains(err.Error(), "not found") {
@@ -327,7 +326,7 @@ func (p *Server) WaitSubtask(ctx context.Context, req *pb.WaitSubtaskRequest) (*
 		case constants.ActionCeaseClusters:
 			_, err := helmHandler.ReleaseStatus(taskDirective.ClusterName)
 			if err != nil {
-				if _, ok := err.(transport.ConnectionError); ok {
+				if isConnectionError(err) {
 					return false, nil
 				}
 				if strings.Contains(err.Error(), "not found") {

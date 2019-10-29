@@ -8,7 +8,7 @@ WORKDIR /go/src/openpitrix.io/runtime-provider-kubernetes/
 COPY . .
 
 RUN mkdir -p /openpitrix_bin
-RUN CGO_ENABLED=0 GOOS=linux GOBIN=/openpitrix_bin go install -ldflags '-w -s' -tags netgo openpitrix.io/runtime-provider-kubernetes/cmd/...
+RUN CGO_ENABLED=0 GOOS=linux GOBIN=/openpitrix_bin go install -ldflags '-w -s' -v -tags netgo openpitrix.io/runtime-provider-kubernetes/cmd/...
 
 FROM alpine:3.7
 RUN apk add --update ca-certificates && update-ca-certificates

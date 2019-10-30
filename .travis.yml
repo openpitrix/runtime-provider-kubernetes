@@ -7,7 +7,7 @@ go:
 go_import_path: openpitrix.io/runtime-provider-kubernetes
 before_install:
 - sudo rm /usr/bin/docker
-- curl -fsSL get.docker.com -o get-docker.sh && sh get-docker.sh
+- curl -fsSL get.docker.com | sh
 script:
 - make check
 deploy:

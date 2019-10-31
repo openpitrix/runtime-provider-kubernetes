@@ -93,7 +93,7 @@ func (p *Parser) parseClusterRolesAndClusterCommons(vals map[string]interface{})
 	clusterRoles := map[string]*models.ClusterRole{}
 	clusterCommons := map[string]*models.ClusterCommon{}
 	for filePath, content := range files {
-		if filepath.Ext(filePath) != ".yaml" {
+		if filepath.Ext(filePath) != ".yaml" && filepath.Ext(filePath) != ".yml" {
 			continue
 		}
 

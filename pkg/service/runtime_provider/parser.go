@@ -19,12 +19,14 @@ import (
 	appsv1beta2 "k8s.io/api/apps/v1beta2"
 	corev1 "k8s.io/api/core/v1"
 	exv1beta1 "k8s.io/api/extensions/v1beta1"
+	apiextv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	k8syaml "k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/helm/pkg/chartutil"
 	"k8s.io/helm/pkg/engine"
 	"k8s.io/helm/pkg/proto/hapi/chart"
 	"k8s.io/helm/pkg/releaseutil"
+	helmV "k8s.io/helm/pkg/version"
 	_ "k8s.io/kubernetes/pkg/apis/apps/install"
 	_ "k8s.io/kubernetes/pkg/apis/extensions/install"
 
@@ -80,6 +82,7 @@ func (p *Parser) parseClusterRolesAndClusterCommons(vals map[string]interface{})
 	renderer := engine.New()
 	files, err := renderer.Render(p.Chart, vals)
 	if err != nil {
+		logger.Debug(nil, "render error: %s", err.Error())
 		return nil, nil, "", err
 	}
 
@@ -88,6 +91,7 @@ func (p *Parser) parseClusterRolesAndClusterCommons(vals map[string]interface{})
 	}
 
 	var apiVersions []string
+	err = apiextv1beta1.AddToScheme(scheme.Scheme)
 	decode := scheme.Codecs.UniversalDeserializer().Decode
 
 	clusterRoles := map[string]*models.ClusterRole{}
@@ -406,6 +410,7 @@ func (p *Parser) parseClusterRolesAndClusterCommons(vals map[string]interface{})
 func (p *Parser) Parse(clusterWrapper *models.ClusterWrapper, appId string) error {
 	customVals, name, description, err := p.parseCustomValues()
 	if err != nil {
+		logger.Debug(nil, "parseCustomValues: %s", err.Error())
 		return err
 	}
 
@@ -417,16 +422,19 @@ func (p *Parser) Parse(clusterWrapper *models.ClusterWrapper, appId string) erro
 
 	vals, err := p.parseValues(customVals, name)
 	if err != nil {
+		logger.Debug(nil, "parseValues: %s", err.Error())
 		return err
 	}
 
 	clusterRoles, clusterCommons, additionalInfo, err := p.parseClusterRolesAndClusterCommons(vals)
 	if err != nil {
+		logger.Debug(nil, "parseClusterRolesAndClusterCommons: %s", err.Error())
 		return err
 	}
 
 	cluster, err := p.parseCluster(name, description, additionalInfo, customVals, appId)
 	if err != nil {
+		logger.Debug(nil, "parseCluster: %s", err.Error())
 		return err
 	}
 
@@ -483,7 +491,7 @@ func (p *Parser) parseValues(customVals map[string]interface{}, name string) (ma
 		return nil, err
 	}
 
-	caps := &chartutil.Capabilities{APIVersions: chartutil.DefaultVersionSet, KubeVersion: version}
+	caps := &chartutil.Capabilities{APIVersions: chartutil.DefaultVersionSet, KubeVersion: version, TillerVersion: helmV.GetVersionProto()}
 
 	vals, err := chartutil.ToRenderValuesCaps(p.Chart, config, options, caps)
 	if err != nil {

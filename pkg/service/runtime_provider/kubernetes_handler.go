@@ -14,7 +14,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
-	types "k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/version"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/kubernetes"
@@ -299,15 +299,30 @@ func (p *KubeHandler) DescribeClusterDetails(clusterWrapper *models.ClusterWrapp
 }
 
 func (p *KubeHandler) checkTillerIsExistedAndRunning(client *kubernetes.Clientset, credential, zone string) error {
-	deployCli := client.ExtensionsV1beta1().Deployments("kube-system")
-
-	deploy, err := deployCli.Get("tiller-deploy", metav1.GetOptions{})
+	srvInfo, err := client.ServerVersion()
 	if err != nil {
-		return gerr.NewWithDetail(nil, gerr.Unavailable, err, gerr.ErrorTillerNotServe, "kube-system")
+		return err
 	}
+	if srvInfo.String() < "v1.15.0" {
+		deployCli := client.ExtensionsV1beta1().Deployments("kube-system")
+		deploy, err := deployCli.Get("tiller-deploy", metav1.GetOptions{})
+		if err != nil {
+			return gerr.NewWithDetail(nil, gerr.Unavailable, err, gerr.ErrorTillerNotServe, "kube-system")
+		}
 
-	if deploy.Status.ReadyReplicas != deploy.Status.Replicas {
-		return gerr.NewWithDetail(nil, gerr.Unavailable, err, gerr.ErrorTillerNotServe, "kube-system")
+		if deploy.Status.ReadyReplicas != deploy.Status.Replicas {
+			return gerr.NewWithDetail(nil, gerr.Unavailable, err, gerr.ErrorTillerNotServe, "kube-system")
+		}
+	} else {
+		deployCli := client.AppsV1().Deployments("kube-system")
+		deploy, err := deployCli.Get("tiller-deploy", metav1.GetOptions{})
+		if err != nil {
+			return gerr.NewWithDetail(nil, gerr.Unavailable, err, gerr.ErrorTillerNotServe, "kube-system")
+		}
+
+		if deploy.Status.ReadyReplicas != deploy.Status.Replicas {
+			return gerr.NewWithDetail(nil, gerr.Unavailable, err, gerr.ErrorTillerNotServe, "kube-system")
+		}
 	}
 
 	return nil

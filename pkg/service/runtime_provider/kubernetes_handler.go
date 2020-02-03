@@ -299,7 +299,7 @@ func (p *KubeHandler) DescribeClusterDetails(clusterWrapper *models.ClusterWrapp
 }
 
 func (p *KubeHandler) checkTillerIsExistedAndRunning(client *kubernetes.Clientset, credential, zone string) error {
-	deployCli := client.ExtensionsV1beta1().Deployments("kube-system")
+	deployCli := client.AppsV1().Deployments("kube-system")
 
 	deploy, err := deployCli.Get("tiller-deploy", metav1.GetOptions{})
 	if err != nil {

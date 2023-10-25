@@ -55,7 +55,8 @@ require (
 	github.com/rubenv/sql-migrate v0.0.0-20191025130928-9355dd04f4b3 // indirect
 	github.com/xlab/handysort v0.0.0-20150421192137-fb3537ed64a1 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	google.golang.org/grpc v1.24.0
+	google.golang.org/grpc v1.58.2
+	google.golang.org/grpc/examples v0.0.0-20231024221354-6e14274d008d // indirect
 	gopkg.in/gorp.v1 v1.7.2 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gotest.tools v2.2.0+incompatible // indirect
